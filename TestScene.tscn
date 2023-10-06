@@ -2,13 +2,13 @@
 
 [ext_resource path="res://tracks/track_2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Camera.gd" type="Script" id=2]
-[ext_resource path="res://cars/CarSUV.tscn" type="PackedScene" id=3]
 [ext_resource path="res://TestScene.gd" type="Script" id=4]
 [ext_resource path="res://lighting_env.tres" type="Environment" id=5]
 [ext_resource path="res://cars/carTruck.tscn" type="PackedScene" id=6]
 [ext_resource path="res://post_process_outlines.shader" type="Shader" id=7]
+[ext_resource path="res://MyCar/Mycar.tscn" type="PackedScene" id=8]
 
-[sub_resource type="ShaderMaterial" id=1]
+[sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 7 )
 shader_param/color_outline_scale = 2.0
 shader_param/depth_outline_scale = 2.0
@@ -23,7 +23,7 @@ shader_param/color_use_laplace = false
 shader_param/use_bg_texture = false
 
 [sub_resource type="QuadMesh" id=2]
-material = SubResource( 1 )
+material = SubResource( 3 )
 size = Vector2( 2, 2 )
 
 [node name="TestScene" type="Spatial"]
@@ -38,23 +38,19 @@ shadow_contact = 0.34
 directional_shadow_mode = 0
 directional_shadow_normal_bias = 0.5
 
-[node name="CarSUV" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 57.089, 0, 5.858 )
-
-[node name="CarMesh" parent="CarSUV" index="0"]
-transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
-
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 55.7557, 4.29647, 0 )
 current = true
 far = 150.0
 script = ExtResource( 2 )
-target_path = NodePath("../CarSUV/CarMesh")
+target_path = NodePath("../MyCar")
 offset = Vector3( 0, 7, 5 )
 
 [node name="OutlineShader" type="MeshInstance" parent="Camera"]
 mesh = SubResource( 2 )
-material/0 = null
+
+[node name="MyCar" parent="." instance=ExtResource( 8 )]
+transform = Transform( -0.127619, 0, 0.991823, 0, 1, 0, -0.991823, 0, -0.127619, 50.0103, 1.17069, 5.858 )
 
 [node name="track_2" parent="." instance=ExtResource( 1 )]
 
@@ -66,7 +62,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -64.1136, 3.12284, -42.5977 )
 
 [node name="CarMesh" parent="carTruck" index="0"]
 transform = Transform( 0.0168241, 0, 0.999858, 0, 1, 0, -0.999858, 0, 0.0168241, 0, -3.08592, 0.5 )
-
-[editable path="CarSUV"]
 
 [editable path="carTruck"]

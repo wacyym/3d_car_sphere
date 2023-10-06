@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://assets/kenney_car_kit/sedan.glb" type="PackedScene" id=1]
+[ext_resource path="res://MyCar/Mycar.gd" type="Script" id=2]
+[ext_resource path="res://MyCar/Wheel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Smoke.tscn" type="PackedScene" id=4]
+[ext_resource path="res://debug/Roboto-Medium.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="PhysicsMaterial" id=2]
+friction = 0.34
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0 ), 0.0, 0.115909, 0, 0, Vector2( 1, 1 ), 0.194385, 0.194385, 0, 0 ]
+
+[sub_resource type="CapsuleShape" id=1]
+radius = 0.533
+height = 1.296
+
+[sub_resource type="DynamicFont" id=4]
+size = 32
+font_data = ExtResource( 5 )
+
+[node name="MyCar" type="RigidBody"]
+mass = 10.0
+physics_material_override = SubResource( 2 )
+can_sleep = false
+linear_damp = 0.1
+angular_damp = 0.2
+script = ExtResource( 2 )
+steer_curve = SubResource( 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.166432, 0 )
+shape = SubResource( 1 )
+
+[node name="sedan" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.579305, 0 )
+
+[node name="Wheel" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.522423, -0.003941, -0.648721 )
+
+[node name="Wheel2" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.522423, -0.003941, 0.652539 )
+
+[node name="Wheel3" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.522, -0.003941, -0.648721 )
+
+[node name="Wheel4" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.522, -0.003941, 0.652539 )
+
+[node name="ForcePoint" type="Spatial" parent="."]
+unique_name_in_owner = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.09, 0 )
+
+[node name="Smoke" parent="." instance=ExtResource( 4 )]
+unique_name_in_owner = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.643236, -0.273805, 0.666262 )
+
+[node name="Smoke2" parent="." instance=ExtResource( 4 )]
+unique_name_in_owner = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.659173, -0.273805, 0.661525 )
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 16.0
+
+[node name="Score" type="Label" parent="Control"]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -166.0
+margin_right = 166.0
+margin_bottom = 38.0
+custom_fonts/font = SubResource( 4 )
+text = "SCORE: 100000000000"
+align = 1
+valign = 1
+
+[editable path="sedan"]

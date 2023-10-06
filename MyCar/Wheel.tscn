@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MyCar/Wheel.gd" type="Script" id=1]
+
+[node name="Wheel" type="RayCast"]
+unique_name_in_owner = true
+enabled = true
+cast_to = Vector3( 0, -0.8, 0 )
+script = ExtResource( 1 )

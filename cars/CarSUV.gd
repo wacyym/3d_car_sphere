@@ -12,9 +12,9 @@ onready var body_mesh = $CarMesh/tmpParent/suv/body
 export (bool) var show_debug = false
 var sphere_offset = Vector3(0, -1.0, 0)
 var acceleration = 50
-var steering = 21
+var steering = 14
 var turn_speed = 5
-var turn_stop_limit = 0.75
+var turn_stop_limit = 1.75
 var body_tilt = 35
 
 var speed_input = 0
@@ -23,9 +23,10 @@ var rotate_input = 0
 func _ready():
 	$Ball/DebugMesh.visible = show_debug
 	ground_ray.add_exception(ball)
-#	DebugOverlay.stats.add_property(ball, "linear_velocity", "length")
-#	DebugOverlay.draw.add_vector(ball, "linear_velocity", 1, 4, Color(0, 1, 0, 0.5))
-#	DebugOverlay.draw.add_vector(car_mesh, "transform:basis:z", -4, 4, Color(1, 0, 0, 0.5))
+	DebugOverlay.stats.add_property(ball, "linear_velocity", "length")
+	DebugOverlay.draw.add_vector(ball, "linear_velocity", 1, 4, Color(0, 1, 0, 0.5))
+	DebugOverlay.draw.add_vector(car_mesh, "transform:basis:z", -4, 4, Color(1, 0, 0, 0.5))
+
 
 func _process(delta):
 	# Can't steer/accelerate when in the air
@@ -57,14 +58,22 @@ func _process(delta):
 		$CarMesh/Smoke2.emitting = false
 		
 	# rotate car mesh
-	if ball.linear_velocity.length() > turn_stop_limit:
-		var new_basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input)
+	#if ball.linear_velocity.length() > turn_stop_limit:
+	#print(car_mesh.global_transform.basis.z.dot(ball.global_transform.basis.z))
+	var speed_z = clamp(ball.linear_velocity.length(),0,10)
+	#if abs(speed_z) > 2:#car_mesh.global_transform.basis.z.dot(ball.linear_velocity) > 0.2:
+	if abs(rotate_input) > 0.0:
+		var new_basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input*speed_z/10)
+		car_mesh.global_transform.basis = car_mesh.global_transform.basis.slerp(new_basis, turn_speed * delta)
+		car_mesh.global_transform = car_mesh.global_transform.orthonormalized()
+	else:
+		var new_basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input*speed_z/10)
 		car_mesh.global_transform.basis = car_mesh.global_transform.basis.slerp(new_basis, turn_speed * delta)
 		car_mesh.global_transform = car_mesh.global_transform.orthonormalized()
 		
-		# tilt body for effect
-		var t = -rotate_input * ball.linear_velocity.length() / body_tilt
-		body_mesh.rotation.z = lerp(body_mesh.rotation.z, t, 10 * delta)
+	# tilt body for effect
+	var t = -rotate_input * ball.linear_velocity.length() / body_tilt
+	body_mesh.rotation.z = lerp(body_mesh.rotation.z, t, 10 * delta)
 		
 	# align mesh with ground normal
 	var n = ground_ray.get_collision_normal()
